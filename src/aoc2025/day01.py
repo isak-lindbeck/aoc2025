@@ -2,10 +2,11 @@ from pathlib import Path
 from typing import Tuple
 
 from aoc2025.utils.io import check_output
+from aoc2025.utils.timed import Timed
 
 
 def run(input_str: str) -> Tuple[int, int]:
-    out_1, out_2= 0, 0
+    out_1, out_2 = 0, 0
     pos = 50
     for line in input_str.splitlines():
         direction = line[0]
@@ -23,5 +24,6 @@ def run(input_str: str) -> Tuple[int, int]:
 
 
 if __name__ == '__main__':
-    output = run(Path("inputs/day01.txt").read_text())
-    check_output(output)
+    with Timed():
+        output = run(Path("inputs/day01.txt").read_text())
+        check_output(output, Path("answers/day01.txt"))

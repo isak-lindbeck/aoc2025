@@ -5,8 +5,9 @@ from typing import Tuple
 HERE = Path(__file__).parent
 
 
-def check_output(out: Tuple):
-    answers = (HERE / Path("../answers/day01.txt")).read_text().strip().splitlines()
+def check_output(out: Tuple, path: Path):
+    answers = path.read_text().strip().splitlines()
+    print(out)
     if str(out[0]) != answers[0]:
         print(f"{out[0]} is not correct for part 1")
     else:
