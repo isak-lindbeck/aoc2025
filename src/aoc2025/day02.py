@@ -12,12 +12,14 @@ def run(input_str: str) -> Tuple[int, int]:
         split = r.strip().split("-")
         start = int(split[0])
         stop = int(split[1]) + 1
+
         for i in range(start, stop):
-            string = str(i)
-            if re.match(r"^(.+)(\1)$", string):
-                out_1 += i
-            if re.match(r"^(.+)(\1)+$", string):
+            if re.match(r"^(.+)(\1)+$", str(i)):
                 out_2 += i
+
+                if re.match(r"^(.+)(\1)$", str(i)):
+                    out_1 += i
+
     return out_1, out_2
 
 
