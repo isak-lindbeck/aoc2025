@@ -31,5 +31,5 @@ def check_output(out: Tuple, path: Path):
     answers = path.read_text().strip().splitlines()
     print(out)
     print()
-    print(check_value(answers[0], str(out[0]), 1))
-    print(check_value(answers[1], str(out[1]), 2))
+    print(check_value(answers[0] if len(answers) > 0 else None, str(out[0]), 1))
+    print(check_value(answers[1] if len(answers) > 1 else None, str(out[1]), 2))
