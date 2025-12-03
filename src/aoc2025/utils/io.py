@@ -1,22 +1,35 @@
 from pathlib import Path
+from typing import Tuple, Any
 
-from typing import Tuple
+from termcolor import colored
 
-HERE = Path(__file__).parent
+
+def red(s: str) -> str:
+    return colored(s, 'red')
+
+
+def green(s: str) -> str:
+    return colored(s, 'green')
+
+
+def blue(s: str) -> str:
+    return colored(s, 'blue')
+
+
+def check_value(answer: str, value: Any, part: int):
+    if value is None or value == "0":
+        return blue(f"part {part}: pass")
+    if answer is None:
+        return blue(f"part {part}: {value}")
+    if str(value) != answer:
+        return red(f"part {part}: {value} is wrong")
+    else:
+        return green(f"part {part}: {value} is correct")
 
 
 def check_output(out: Tuple, path: Path):
     answers = path.read_text().strip().splitlines()
     print(out)
-    if str(out[0]) != answers[0]:
-        print(f"{out[0]} is not correct for part 1")
-    else:
-        print(f"{out[0]} is correct for part 1")
-
-    if out[1] is None:
-        print("pass")
-    else:
-        if str(out[1]) != answers[1]:
-            print(f"{out[1]} is not correct for part 2")
-        else:
-            print(f"{out[1]} is correct for part 2")
+    print()
+    print(check_value(answers[0], str(out[0]), 1))
+    print(check_value(answers[1], str(out[1]), 2))
