@@ -33,7 +33,7 @@ class Matrix:
         nw = self.get(x=x - 1, y=y - 1, default=default)
         return [n, ne, e, se, s, sw, w, nw]
 
-    def for_each(self, callable: Callable[[str], bool]) -> Generator[tuple[int, int, str]]:
+    def each(self, callable: Callable[[str], bool]) -> Generator[tuple[int, int, str]]:
         for y in range(0, self.height):
             for x in range(0, self.width):
                 if callable(self.data[x][y]):
