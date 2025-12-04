@@ -6,9 +6,9 @@ authors = [
     {name = "Isak Lindbeck"}
 ]
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.13"
 dependencies = [
-    "termcolor (>=3.2.0,<4.0.0)"
+    "termcolor (>=3.2.0,<4.0.0)",
 ]
 
 [tool.poetry]
