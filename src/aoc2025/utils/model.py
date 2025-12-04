@@ -1,5 +1,9 @@
 from typing import Callable, Generator
 
+ORTHOGONALS = [(0, -1), (1, 0), (0, 1), (-1, 0)]
+DIAGONALS = [(1, -1), (1, 1), (-1, 1), (-1, -1)]
+SURROUNDING = ORTHOGONALS + DIAGONALS
+
 
 class Matrix:
     def __init__(self, input_str: str):
@@ -22,11 +26,10 @@ class Matrix:
     def set(self, x: int, y: int, value: str):
         self.data[x][y] = value
 
-    def surrounding_values(self, x: int, y: int, default: str | None = None) -> list[str]:
-        directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
-        return [self.get(x + xy[0], y + xy[1], default) for xy in directions]
+    def surrounding(self, x: int, y: int, default: str | None = None) -> list[str]:
+        return [self.get(x + xy[0], y + xy[1], default) for xy in SURROUNDING]
 
-    def each(self, elem_filter: Callable[[str], bool] = lambda x: True) -> Generator[tuple[int, int, str]]:
+    def all(self, elem_filter: Callable[[str], bool] = lambda x: True) -> Generator[tuple[int, int, str]]:
         for y in range(0, self.height):
             for x in range(0, self.width):
                 if elem_filter(self.data[x][y]):
