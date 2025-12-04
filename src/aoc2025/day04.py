@@ -11,13 +11,13 @@ def run(input_str: str) -> Tuple[int, int]:
 
     matrix = Matrix(input_str)
     for x, y, value in matrix.for_each(lambda v: v == "@"):
-        if matrix.neighbour_values(x, y, ".").count("@") < 4:
+        if matrix.neighbour_values(x, y).count("@") < 4:
             out_1 += 1
 
     while True:
         prev_count = out_2
         for x, y, value in matrix.for_each(lambda v: v == "@"):
-            if matrix.neighbour_values(x, y, ".").count("@") < 4:
+            if matrix.neighbour_values(x, y).count("@") < 4:
                 matrix.set(x, y, "x")
                 out_2 += 1
         if prev_count == out_2:

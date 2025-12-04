@@ -22,7 +22,7 @@ class Matrix:
     def set(self, x: int, y: int, value: str):
         self.data[x][y] = value
 
-    def neighbour_values(self, x: int, y: int, default: str) -> list[str]:
+    def neighbour_values(self, x: int, y: int, default: str | None = None) -> list[str]:
         n = self.get(x=x, y=y - 1, default=default)
         ne = self.get(x=x + 1, y=y - 1, default=default)
         e = self.get(x=x + 1, y=y, default=default)
