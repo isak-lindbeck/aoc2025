@@ -22,21 +22,14 @@ class Matrix:
     def set(self, x: int, y: int, value: str):
         self.data[x][y] = value
 
-    def neighbour_values(self, x: int, y: int, default: str | None = None) -> list[str]:
-        n = self.get(x=x, y=y - 1, default=default)
-        ne = self.get(x=x + 1, y=y - 1, default=default)
-        e = self.get(x=x + 1, y=y, default=default)
-        se = self.get(x=x + 1, y=y + 1, default=default)
-        s = self.get(x=x, y=y + 1, default=default)
-        sw = self.get(x=x - 1, y=y + 1, default=default)
-        w = self.get(x=x - 1, y=y, default=default)
-        nw = self.get(x=x - 1, y=y - 1, default=default)
-        return [n, ne, e, se, s, sw, w, nw]
+    def surrounding_values(self, x: int, y: int, default: str | None = None) -> list[str]:
+        directions = [(0, -1), (1, -1), (1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1)]
+        return [self.get(x + xy[0], y + xy[1], default) for xy in directions]
 
-    def each(self, callable: Callable[[str], bool]) -> Generator[tuple[int, int, str]]:
+    def each(self, elem_filter: Callable[[str], bool] = lambda x: True) -> Generator[tuple[int, int, str]]:
         for y in range(0, self.height):
             for x in range(0, self.width):
-                if callable(self.data[x][y]):
+                if elem_filter(self.data[x][y]):
                     yield x, y, self.data[x][y]
 
     def __str__(self):

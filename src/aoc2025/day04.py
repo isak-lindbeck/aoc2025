@@ -10,14 +10,15 @@ def run(input_str: str) -> Tuple[int, int]:
     out_1, out_2 = 0, 0
 
     matrix = Matrix(input_str)
+
     for x, y, value in matrix.each(lambda v: v == "@"):
-        if matrix.neighbour_values(x, y).count("@") < 4:
+        if matrix.surrounding_values(x, y).count("@") < 4:
             out_1 += 1
 
     while True:
         prev_count = out_2
         for x, y, value in matrix.each(lambda v: v == "@"):
-            if matrix.neighbour_values(x, y).count("@") < 4:
+            if matrix.surrounding_values(x, y).count("@") < 4:
                 matrix.set(x, y, "x")
                 out_2 += 1
         if prev_count == out_2:
