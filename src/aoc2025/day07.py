@@ -12,35 +12,29 @@ def run(input_str: str) -> Tuple[int, int]:
 
     matrix = matrix_from_str(input_str)
 
-    for y in range(1, matrix.height):
-        for x in range(matrix.width):
-            current = matrix.get(x, y)
-            above = matrix.get(x, y - 1, default=".")
-            if above == "|" or above == "S":
-                if current == ".":
-                    matrix.set(x, y, "|")
-                if current == "^":
-                    out_1 += 1
-                    matrix.replace(x - 1, y, old_value=".", new_value="|")
-                    matrix.replace(x + 1, y, old_value=".", new_value="|")
+    for x, y, current in matrix.all():
+        above = matrix.get(x, y - 1)
+        if above == "|" or above == "S":
+            if current == ".":
+                matrix.set(x, y, "|")
+            if current == "^":
+                out_1 += 1
+                matrix.replace(x - 1, y, old_value=".", new_value="|")
+                matrix.replace(x + 1, y, old_value=".", new_value="|")
 
     matrix = typing.cast(Matrix[str | int], matrix)
-
     for x in range(matrix.width):
         matrix.replace(x, matrix.height - 1, "|", 1)
 
-    for y in range(matrix.height - 2, -1, -1):
+    for y in reversed(range(matrix.height - 1)):
         for x in range(matrix.width):
             current = matrix.get(x, y)
             below = matrix.get(x, y + 1)
             if current == "|":
                 matrix.set(x, y, below)
             elif current == "^":
-                value = 0
-                if isinstance(left_below := matrix.get(x - 1, y + 1), int):
-                    value += left_below
-                if isinstance(right_below := matrix.get(x + 1, y + 1), int):
-                    value += right_below
+                value = left_below if isinstance(left_below := matrix.get(x - 1, y + 1), int) else 0
+                value += right_below if isinstance(right_below := matrix.get(x + 1, y + 1), int) else 0
                 matrix.set(x, y, value)
             elif current == "S":
                 out_2 = below
