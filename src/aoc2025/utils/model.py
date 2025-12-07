@@ -7,16 +7,19 @@ SURROUNDING = ORTHOGONALS + DIAGONALS
 
 class Matrix:
     def __init__(self, input_str: str):
-        self.data: list[list[str]] = []
-        for line in input_str.splitlines():
-            self.data.append([''] * len(line))
 
-        for y, line in enumerate(input_str.splitlines()):
+        lines = input_str.splitlines()
+        self.height = len(lines)
+        self.width = len(lines[0])
+
+        self.data: list[list[str]] = []
+
+        for x in range(self.width):
+            self.data.append([''] * self.height)
+
+        for y, line in enumerate(lines):
             for x, c in enumerate(line):
                 self.data[x][y] = c
-
-        self.width = len(self.data[0])
-        self.height = len(self.data)
 
     def get(self, x: int, y: int, default: str | None = None) -> str:
         if 0 <= x < self.width and 0 <= y < self.height:
