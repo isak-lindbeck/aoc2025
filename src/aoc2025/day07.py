@@ -12,15 +12,17 @@ def run(input_str: str) -> Tuple[int, int]:
 
     matrix = matrix_from_str(input_str)
 
-    for x, y, current in matrix.all():
-        above = matrix.get(x, y - 1)
-        if above == "|" or above == "S":
-            if current == ".":
-                matrix.set(x, y, "|")
-            if current == "^":
-                out_1 += 1
-                matrix.replace(x - 1, y, old_value=".", new_value="|")
-                matrix.replace(x + 1, y, old_value=".", new_value="|")
+    for y in range(1, matrix.height):
+        for x in range(matrix.width):
+            current = matrix.get(x,y)
+            above = matrix.get(x, y - 1)
+            if above == "|" or above == "S":
+                if current == ".":
+                    matrix.set(x, y, "|")
+                if current == "^":
+                    out_1 += 1
+                    matrix.replace(x - 1, y, old_value=".", new_value="|")
+                    matrix.replace(x + 1, y, old_value=".", new_value="|")
 
     matrix = typing.cast(Matrix[str | int], matrix)
     for x in range(matrix.width):
