@@ -2,14 +2,14 @@ from pathlib import Path
 from typing import Tuple
 
 from aoc2025.utils.io import check_output
-from aoc2025.utils.model import Matrix
+from aoc2025.utils.model import matrix_from_str
 from aoc2025.utils.timed import Timed
 
 
 def run(input_str: str) -> Tuple[int, int]:
     out_1, out_2 = 0, 0
 
-    matrix = Matrix(input_str)
+    matrix = matrix_from_str(input_str)
 
     for x, y, value in matrix.all(lambda v: v == "@"):
         if matrix.surrounding(x, y).count("@") < 4:

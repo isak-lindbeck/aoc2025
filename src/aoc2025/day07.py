@@ -1,15 +1,16 @@
+import typing
 from pathlib import Path
 from typing import Tuple
 
 from aoc2025.utils.io import check_output
-from aoc2025.utils.model import Matrix
+from aoc2025.utils.model import matrix_from_str, Matrix
 from aoc2025.utils.timed import Timed
 
 
 def run(input_str: str) -> Tuple[int, int]:
     out_1, out_2 = 0, 0
 
-    matrix = Matrix(input_str)
+    matrix = matrix_from_str(input_str)
 
     for y in range(1, matrix.height):
         for x in range(matrix.width):
@@ -20,34 +21,29 @@ def run(input_str: str) -> Tuple[int, int]:
                     matrix.set(x, y, "|")
                 if current == "^":
                     out_1 += 1
-                    left = matrix.get(x - 1, y, "")
-                    right = matrix.get(x + 1, y, "")
-                    if left == ".":
-                        matrix.set(x - 1, y, "|")
-                    if right == ".":
-                        matrix.set(x + 1, y, "|")
+                    matrix.replace(x - 1, y, old_value=".", new_value="|")
+                    matrix.replace(x + 1, y, old_value=".", new_value="|")
+
+    matrix = typing.cast(Matrix[str | int], matrix)
 
     for x in range(matrix.width):
-        if matrix.get(x, matrix.height - 1) == "|":
-            matrix.set(x, matrix.height - 1, "1")
+        matrix.replace(x, matrix.height - 1, "|", 1)
 
     for y in range(matrix.height - 2, -1, -1):
         for x in range(matrix.width):
             current = matrix.get(x, y)
-            below = matrix.get(x, y + 1, "")
-            if current == "|" and below.isnumeric():
+            below = matrix.get(x, y + 1)
+            if current == "|":
                 matrix.set(x, y, below)
-            if current == "^":
+            elif current == "^":
                 value = 0
-                left_below = matrix.get(x - 1, y + 1, "")
-                right_below = matrix.get(x + 1, y + 1, "")
-                if left_below.isnumeric():
-                    value += int(left_below)
-                if right_below.isnumeric():
-                    value += int(right_below)
-                matrix.set(x, y, str(value))
-            if current == "S":
-                out_2 = int(below)
+                if isinstance(left_below := matrix.get(x - 1, y + 1), int):
+                    value += left_below
+                if isinstance(right_below := matrix.get(x + 1, y + 1), int):
+                    value += right_below
+                matrix.set(x, y, value)
+            elif current == "S":
+                out_2 = below
 
     return out_1, out_2
 
