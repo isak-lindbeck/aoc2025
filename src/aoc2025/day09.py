@@ -22,7 +22,7 @@ class Rectangle:
             self.y_1, self.y_2 = self.y_2, self.y_1
 
     def area(self) -> int:
-        # Edges are 1 thick
+        # Edges adds 1 thickness
         dx = self.x_2 - self.x_1 + 1
         dy = self.y_2 - self.y_1 + 1
         return dx * dy
@@ -39,35 +39,33 @@ def is_corner_subtractive(a: Point, b: Point, c: Point) -> bool:
 def run(input_str: str) -> Tuple[int, int]:
     out_1, out_2 = 0, 0
 
-    node_list: list[Point] = []
+    points: list[Point] = []
     for line in input_str.splitlines():
         split = line.split(",")
-        current = Point(int(split[0]), int(split[1]))
-        node_list.append(current)
+        points.append(Point(int(split[0]), int(split[1])))
 
     negative_boxes: list[Rectangle] = []
-    for i in range(len(node_list)):
-        a = node_list[i]
-        b = node_list[(i + 1) % len(node_list)]
-        c = node_list[(i + 2) % len(node_list)]
+    for i in range(len(points)):
+        a = points[i]
+        b = points[(i + 1) % len(points)]
+        c = points[(i + 2) % len(points)]
         if is_corner_subtractive(a, b, c):
             negative_boxes.append(Rectangle(a, c))
 
-    for i in range(len(node_list)):
-        for j in range(i + 1, len(node_list)):
-            current = node_list[i]
-            other = node_list[j]
-            box = Rectangle(current, other)
+    negative_boxes = sorted(negative_boxes, key=lambda box: box.area(), reverse=True)
 
-            area = box.area()
+    for i in range(len(points)):
+        for j in range(i + 1, len(points)):
+            box = Rectangle(points[i], points[j])
+
             out_1 = max(box.area(), out_1)
 
-            if out_2 < area:
+            if out_2 < box.area():
                 for cb in negative_boxes:
                     if box.overlaps(cb):
                         break
                 else:
-                    out_2 = max(area, out_2)
+                    out_2 = max(box.area(), out_2)
 
     return out_1, out_2
 
