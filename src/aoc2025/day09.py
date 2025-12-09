@@ -1,61 +1,58 @@
 from pathlib import Path
-from typing import Tuple
 
 from aoc2025.utils.io import check_output
 from aoc2025.utils.timed import Timed
 
 
 class Point:
-    def __init__(self, x: int, y: int):
-        self.x = x
-        self.y = y
+    def __init__(self, xy: tuple[int, int]):
+        self.x = xy[0]
+        self.y = xy[1]
 
 
 class Rectangle:
     def __init__(self, p_1: Point, p_2: Point):
-        self.x_1, self.y_1, self.x_2, self.y_2 = p_1.x, p_1.y, p_2.x, p_2.y
+        self.p_1 = p_1
+        self.p_2 = p_2
 
-        # Ensure the lower number is in the _1 var
-        if self.x_2 < self.x_1:
-            self.x_1, self.x_2 = self.x_2, self.x_1
-        if self.y_2 < self.y_1:
-            self.y_1, self.y_2 = self.y_2, self.y_1
+        self.left = min(self.p_1.x, self.p_2.x)
+        self.right = max(self.p_1.x, self.p_2.x)
+        self.top = min(self.p_1.y, self.p_2.y)
+        self.bottom = max(self.p_1.y, self.p_2.y)
 
     def area(self) -> int:
         # Edges adds 1 thickness
-        dx = self.x_2 - self.x_1 + 1
-        dy = self.y_2 - self.y_1 + 1
-        return dx * dy
+        width = self.right - self.left + 1
+        height = self.bottom - self.top + 1
+        return width * height
 
-    def overlaps(self, b: Rectangle) -> bool:
+    def overlaps(self, r: Rectangle) -> bool:
         # No overlap if only edges are "touching" 
-        return self.x_1 < b.x_2 and self.x_2 > b.x_1 and self.y_1 < b.y_2 and self.y_2 > b.y_1
+        return self.left < r.right and self.right > r.left and self.top < r.bottom and self.bottom > r.top
 
 
 def is_corner_subtractive(a: Point, b: Point, c: Point) -> bool:
-    return ((b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x)) < 0
+    return (b.x - a.x) * (c.y - a.y) - (b.y - a.y) * (c.x - a.x) < 0
 
 
-def run(input_str: str) -> Tuple[int, int]:
+def run(input_str: str) -> tuple[int, int]:
     out_1, out_2 = 0, 0
 
-    points: list[Point] = []
-    for line in input_str.splitlines():
-        split = line.split(",")
-        points.append(Point(int(split[0]), int(split[1])))
+    points: list[Point] = list(map(Point, map(eval, input_str.splitlines())))
+    num_points = len(points)
 
     negative_boxes: list[Rectangle] = []
-    for i in range(len(points)):
+    for i in range(num_points):
         a = points[i]
-        b = points[(i + 1) % len(points)]
-        c = points[(i + 2) % len(points)]
+        b = points[(i + 1) % num_points]
+        c = points[(i + 2) % num_points]
         if is_corner_subtractive(a, b, c):
             negative_boxes.append(Rectangle(a, c))
 
-    negative_boxes = sorted(negative_boxes, key=lambda box: box.area(), reverse=True)
+    negative_boxes.sort(key=lambda box: box.area(), reverse=True)
 
-    for i in range(len(points)):
-        for j in range(i + 1, len(points)):
+    for i in range(num_points):
+        for j in range(i + 1, num_points):
             box = Rectangle(points[i], points[j])
 
             out_1 = max(box.area(), out_1)
